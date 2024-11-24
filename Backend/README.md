@@ -70,15 +70,90 @@ Follow these steps to set up the backend API service:
 
    The server will start running on `http://localhost:5000` (default).
 
-## API Endpoints
+## Supported APIs:
 
-### **Shopify Integration Endpoints**
+Here is a list of all the currently supported API endpoints:
 
-- **GET /shopify/orders**: Fetch all orders from the connected Shopify store.
-- **GET /shopify/products**: Fetch all products listed in the Shopify store.
-- **POST /shopify/order/fulfill**: Fulfill an order in the Shopify store.
-- **POST /shopify/product/add**: Add a new product to the Shopify store.
-- **PUT /shopify/product/update**: Update an existing product in the Shopify store.
+### 1. **Combined Results for Products**
+   - **Endpoint**: `/api/admin/products`
+     - **Description**: Get combined product data from Shopify and other integrated platforms.
+     - **Method**: `GET`
+     - **Response**: Returns an array of products with details like platform name, product name, price, quantity, and stock status (in stock or out of stock).
+
+### 2. **Product Count**
+   - **Endpoint**: `/api/admin/product-count`
+     - **Description**: Get the total count of products across all integrated platforms.
+     - **Method**: `GET`
+     - **Response**: Returns the total product count as a JSON object, e.g., `{ count: 150 }`.
+
+### 3. **Combined Results for Orders**
+   - **Endpoint**: `/api/admin/orders`
+     - **Description**: Get combined order data from Shopify and other platforms.
+     - **Method**: `GET`
+     - **Response**: Returns an array of orders, including details like order ID, customer information, product list, and order status.
+
+### 4. **Order Count**
+   - **Endpoint**: `/api/admin/orders-count`
+     - **Description**: Get the total count of orders across all integrated platforms.
+     - **Method**: `GET`
+     - **Response**: Returns the total order count as a JSON object, e.g., `{ count: 250 }`.
+
+### 5. **Retrieve All Products from Shopify** 
+   - **Endpoint**: `/api/products`
+     - **Description**: Fetch all products from Shopify platform.
+     - **Method**: `GET`
+     - **Response**: Returns all products from Shopify.
+
+### 6. **Retrieve Single Product by ID**
+   - **Endpoint**: `/api/products/:id`
+     - **Description**: Fetch a single product from Shopify by its ID.
+     - **Method**: `GET`
+     - **Response**: Returns a single product from Shopify.
+
+### 7. **Add New Product to Shopify**
+   - **Endpoint**: `/api/products`
+     - **Description**: Add a new product to Shopify platform.
+     - **Method**: `POST`
+     - **Payload**: 
+       ```json
+       {
+         "title": "Product Title",
+         "body_html": "Product Description",
+         "vendor": "Product Vendor",
+         "price": "Product Price",
+         "quantity": "Product Quantity",
+         "image_url": "Product Image URL"
+       }
+       ```
+     - **Response**: Returns a success message along with the added product data.
+
+### 8. **Retrieve Orders from Shopify**
+   - **Endpoint**: `/api/orders`
+     - **Description**: Fetch all orders from Shopify.
+     - **Method**: `GET`
+     - **Response**: Returns a list of orders from Shopify.
+
+### 9. **Retrieve Single Order by ID**
+   - **Endpoint**: `/api/orders/:id`
+     - **Description**: Fetch a single order from Shopify by its ID.
+     - **Method**: `GET`
+     - **Response**: Returns a single order from Shopify.
+
+### 10. **Add New Order to Shopify**
+   - **Endpoint**: `/api/orders`
+     - **Description**: Create a new order in Shopify.
+     - **Method**: `POST`
+     - **Payload**: 
+       ```json
+       {
+         "order_id": "Order ID",
+         "customer_id": "Customer ID",
+         "products": [{"product_id": "Product ID", "quantity": 1}],
+         "total_price": "Total Price"
+       }
+       ```
+     - **Response**: Returns a success message and order details.
+
 
 ### **Placeholder Endpoints for Other Platforms**
 - **GET /woocommerce/orders**: Fetch all orders from WooCommerce (currently inactive).
