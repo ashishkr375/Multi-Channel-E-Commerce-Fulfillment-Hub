@@ -15,7 +15,12 @@ const Transactions = () => {
     const fetchTransactions = async () => {
       try {
         const response = await axios.get("https://multi-channel-e-commerce-fulfillment-hub.onrender.com/api/admin/recent-transactions");
-        setTransactions(response.data);
+        // Ensure each transaction has a unique `id`
+        const transactionsWithId = response.data.map(transaction => ({
+          ...transaction,
+          id: transaction.txId, // Use txId as the unique identifier
+        }));
+        setTransactions(transactionsWithId);
       } catch (error) {
         console.error("Error fetching transactions:", error);
       }
@@ -24,27 +29,39 @@ const Transactions = () => {
     fetchTransactions();
   }, []);
 
-  // Columns configuration for the DataGrid
+ 
   const columns = [
     { field: "txId", headerName: "Transaction ID", flex: 0.5 },
-    { field: "user", headerName: "User", flex: 1 },
-    { field: "date", headerName: "Date", flex: 1, type: "dateTime" },
-    { field: "amount", headerName: "Amount", flex: 0.5, type: "number", headerAlign: "left", align: "left" },
-    { field: "currency", headerName: "Currency", flex: 0.5 },
-    { field: "status", headerName: "Status", flex: 1 },
-    { field: "gateway", headerName: "Payment Gateway", flex: 1 },
     {
-      field: "payment_method",
-      headerName: "Payment Method",
+      field: "user", 
+      headerName: "Platform",
       flex: 1,
-      renderCell: ({ row }) => {
+      renderCell: () => {
         return (
-          <Typography variant="body2" color={colors.grey[800]}>
-            {row.payment_method}
+          <Typography variant="body2" color={colors.greenAccent[400]}>
+            Shopify
           </Typography>
         );
       },
     },
+    { field: "date", headerName: "Date", flex: 1, type: "dateTime" },
+    {
+      field: "card_holder_name",
+      headerName: "Customer Name",
+      flex: 1,
+      renderCell: ({ row }) => {
+        return (
+          <Typography variant="body2" color={ colors.greenAccent[400]}>
+            {row.card_holder_name}
+          </Typography>
+        );
+      },
+    },
+    { field: "amount", headerName: "Amount", flex: 0.5, type: "number", headerAlign: "left", align: "left" },
+    { field: "currency", headerName: "Currency", flex: 0.5 },
+    { field: "status", headerName: "Status", flex: 1 },
+    { field: "gateway", headerName: "Payment Gateway", flex: 1 },
+    
     {
       field: "pending_amount",
       headerName: "Pending Amount",

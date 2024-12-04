@@ -16,10 +16,61 @@ import BarChart from "../../components/BarChart";
 import StatBox from "../../components/StatBox";
 import ProgressCircle from "../../components/ProgressCircle";
 import CloudDoneIcon from '@mui/icons-material/CloudDone';
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [transactions, setTransactions] = useState([]);
+  const [orderCount, setOrderCount] = useState(0); // For order count
+  const [totalSales, setTotalSales] = useState(0); // For total sales
+
+  // Fetch transactions from the API
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await axios.get("https://multi-channel-e-commerce-fulfillment-hub.onrender.com/api/admin/recent-transactions");
+        setTransactions(response.data);
+       
+        const total = response.data.reduce((acc, transaction) => acc + parseFloat(transaction.amount), 0);
+        setTotalSales(total); 
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
+
+// Fetch order count from the API
+  useEffect(() => {
+    const fetchOrderCount = async () => {
+      try {
+        const response = await axios.get("https://multi-channel-e-commerce-fulfillment-hub.onrender.com/api/admin/order-count");
+        setOrderCount(response.data.count);
+      } catch (error) {
+        console.error("Error fetching order count:", error);
+      }
+    };
+
+    fetchOrderCount();
+  }, []);
+
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await axios.get("https://multi-channel-e-commerce-fulfillment-hub.onrender.com/api/admin/recent-transactions");
+        setTransactions(response.data);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+      }
+    };
+
+    fetchTransactions();
+  }, []);
 
   return (
     <Box m="20px">
@@ -59,8 +110,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="1,361"
-            subtitle="Todya's Orders"
+            title={orderCount}
+            subtitle="Total Orders (Monthly)"
             progress="0.75"
             increase="+14%"
             icon={
@@ -78,7 +129,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="43,225"
+            title={`₹ ${totalSales.toFixed(2)}`}
             subtitle="Sales Obtained "
             progress="0.50"
             increase="+21%"
@@ -97,7 +148,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="1,126"
+            title={orderCount - 2} 
             subtitle="Order Fullfilled"
             progress="0.30"
             increase="+5%"
@@ -116,7 +167,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="134"
+            title="2"
             subtitle="pending by MCF"
             progress="0.80"
             increase="+43%"
@@ -246,37 +297,44 @@ const Dashboard = () => {
               Recent Transactions
             </Typography>
           </Box>
-          {mockTransactions.map((transaction, i) => (
-            <Box
-              key={`${transaction.txId}-${i}`}
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              borderBottom={`4px solid ${colors.primary[500]}`}
-              p="15px"
-            >
-              <Box>
-                <Typography
-                  color={colors.blueAccent[500]}
-                  variant="h5"
-                  fontWeight="600"
-                >
-                  {transaction.txId}
-                </Typography>
-                <Typography color={colors.grey[100]}>
-                  {transaction.user}
-                </Typography>
-              </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
-              <Box
-                backgroundColor={colors.blueAccent[300]}
-                p="5px 10px"
-                borderRadius="4px"
-              >
-                {transaction.cost}
-              </Box>
+          {/* Transaction List */}
+      {transactions.length === 0 ? (
+        <Typography color={colors.grey[100]} variant="h6" textAlign="center" mt="20px">
+          No transactions available
+        </Typography>
+      ) : (
+        transactions.map((transaction, i) => (
+          <Box
+            key={`${transaction.txId}-${i}`}
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            borderBottom={`4px solid ${colors.primary[500]}`}
+            p="15px"
+          >
+            <Box>
+              <Typography color={colors.blueAccent[500]} variant="h5" fontWeight="600">
+                {transaction.txId}
+              </Typography>
+              <Typography color={colors.grey[100]}>
+                Shopify {/* Hardcoding user name as Shopify */}
+              </Typography>
             </Box>
-          ))}
+
+            <Box color={colors.grey[100]}>
+              {new Date(transaction.date).toLocaleString()} {/* Formatting the date */}
+            </Box>
+
+            <Box
+              backgroundColor={colors.blueAccent[300]}
+              p="5px 10px"
+              borderRadius="4px"
+            >
+              {transaction.amount} {transaction.currency}
+            </Box>
+          </Box>
+        ))
+      )}
         </Box>
 
         
