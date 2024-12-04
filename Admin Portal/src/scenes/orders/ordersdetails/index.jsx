@@ -18,7 +18,7 @@ const ViewDetails = () => {
   useEffect(() => {
     // Fetch order details by order ID
     axios
-      .get(`http://localhost:5000/api/shopify/order/${orderId}`)
+      .get(`https://multi-channel-e-commerce-fulfillment-hub.onrender.com/api/shopify/order/${orderId}`)
       .then((response) => {
         setOrder(response.data);
         setLoading(false);
