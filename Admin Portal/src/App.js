@@ -16,6 +16,7 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
 import Connect from "./scenes/connect";
+import Transactions from "./scenes/transactions";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -43,6 +44,7 @@ function App() {
               <Route path="/geography" element={<Geography />} />
               <Route path="*" element={<div>404</div>} />
               <Route path="/connect" element={<Connect />} />
+              <Route path="/transactions" element={<Transactions/>} />
             </Routes>
           </main>
         </div>

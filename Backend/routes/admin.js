@@ -37,6 +37,101 @@ const fetchOtherPlatformProducts = async () => {
   return allProducts;
 };
 
+// Function to fetch transactions from Shopify
+const fetchShopifyTransactions = async () => {
+  try {
+    const response = await axios.get(`${shopifyApiUrl}/transactions`);
+    
+    // Check if 'transactions' exists in response data
+    if (!response.data || !Array.isArray(response.data)) {
+      throw new Error("No transactions data found or response format is incorrect.");
+    }
+
+    // Process and map the transactions
+    const transactions = response.data.map((transaction) => ({
+      id: transaction.id,
+      order_id: transaction.order_id,
+      kind: transaction.kind,
+      gateway: transaction.gateway,
+      status: transaction.status,
+      message: transaction.message,
+      created_at: transaction.created_at,
+      processed_at: transaction.processed_at,
+      amount: transaction.amount,
+      currency: transaction.currency,
+      payment_id: transaction.payment_id,
+      total_unsettled_set: transaction.total_unsettled_set?.presentment_money?.amount || "0.0",
+      card_details: {
+        credit_card_number: transaction.payment_details?.credit_card_number || "Unknown",
+        credit_card_company: transaction.payment_details?.credit_card_company || "Unknown",
+        credit_card_name: transaction.payment_details?.credit_card_name || "Unknown",
+        credit_card_expiration_month: transaction.payment_details?.credit_card_expiration_month || "Unknown",
+        credit_card_expiration_year: transaction.payment_details?.credit_card_expiration_year || "Unknown",
+      },
+      pending_amount: transaction.total_unsettled_set?.presentment_money?.amount || "0.0",
+      manual_payment_gateway: transaction.manual_payment_gateway,
+      receipt_paid_amount: transaction.receipt?.paid_amount || "0.0",
+    }));
+
+    return transactions;
+
+  } catch (error) {
+    console.error("Error fetching transactions from Shopify:", error.message);
+    return [];  // Return an empty array if something goes wrong
+  }
+};
+
+//function to fetch transactions from other platforms (to be expanded for future integrations)
+const fetchOtherPlatformTransactions = async () => {
+  const allTransactions = [];
+  for (const platform of otherPlatformApiUrls) {
+    try {
+      const response = await axios.get(``
+      );
+      allTransactions.push(...response.data.transactions);
+    } catch (error) {
+      console.error(`Error fetching transactions from ${platform.name}:`, error);
+    }
+  }
+  return allTransactions;
+};
+// Route to get recent transactions from Shopify and other platforms
+router.get("/recent-transactions", async (req, res) => {
+  try {
+    // Fetch transactions from Shopify
+    const shopifyTransactions = await fetchShopifyTransactions();
+    
+    // Fetch products or transactions from other platforms
+    const otherPlatformTransactions = await fetchOtherPlatformTransactions(); // Add your other platform API function here
+    
+   
+    const allTransactions = [...shopifyTransactions, ...otherPlatformTransactions];
+    
+    
+    const transactions = allTransactions.map((transaction) => ({
+      txId: transaction.id,
+      user: transaction.user || transaction.vendor || transaction.platformName || "Unknown",
+      date: transaction.created_at || "Unknown",
+      amount: transaction.amount || "Unknown",
+      currency: transaction.currency || "Unknown",
+      status: transaction.status || "Unknown",
+      gateway: transaction.gateway || "Unknown",
+      card_holder_name: transaction.card_details?.credit_card_name || "Unknown",
+      card_last_digits: transaction.card_details?.credit_card_number?.slice(-4) || "Unknown",
+      payment_method: transaction.payment_id || "Unknown",
+      pending_amount: transaction.pending_amount || "0.0",
+    }));
+    
+    res.json(transactions);
+  } catch (error) {
+    console.error("Error fetching recent transactions:", error);
+    res.status(500).json({ error: "Failed to fetch recent transactions" });
+  }
+});
+
+
+
+
 // Route to get all products from Shopify and other platforms
 router.get("/products", async (req, res) => {
   try {

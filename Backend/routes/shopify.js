@@ -64,6 +64,28 @@ router.get("/orders", async (req, res) => {
   }
 });
 
+// Route to get transactions for all orders
+router.get("/transactions", async (req, res) => {
+  try {
+    // Fetch all orders
+    const orders = await shopify.order.list({ status: "any" });  // Modify this to filter by status if needed
+    
+    // Loop through each order to get its transactions
+    const allTransactions = [];
+    for (const order of orders) {
+      const transactions = await shopify.transaction.list(order.id);
+      allTransactions.push(...transactions);  // Append transactions to the array
+    }
+
+    // Return all transactions
+    res.json(allTransactions);
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    res.status(500).json({ error: "Failed to fetch transactions" });
+  }
+});
+
+
 // Route to update order fulfillment status
 router.put("/order/fulfillment/:orderId", async (req, res) => {
   try {
@@ -91,6 +113,8 @@ router.put("/order/fulfillment/:orderId", async (req, res) => {
       const fulfillment = await shopify.fulfillment.create(order.id, fulfillmentData);
       return res.status(200).json({ message: "Order marked as fulfilled", fulfillment });
     }
+
+
 
     // For other statuses, we can update the order's status directly
     const updatedOrder = await shopify.order.update(orderId, {
