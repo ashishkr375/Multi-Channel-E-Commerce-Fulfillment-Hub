@@ -144,6 +144,7 @@ router.get("/products", async (req, res) => {
     // Combine the results from Shopify and other platforms
     const combinedProducts = [
       ...shopifyProducts.map((product) => ({
+        id: product.id,
         platform: "Shopify",
         name: product.title,
         price: product.variants[0].price,
