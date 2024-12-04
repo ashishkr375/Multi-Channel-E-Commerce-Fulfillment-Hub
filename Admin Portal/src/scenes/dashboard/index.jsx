@@ -321,6 +321,9 @@ const Dashboard = () => {
               <Typography color={colors.grey[100]}>
                 Shopify {/* Hardcoding user name as Shopify */}
               </Typography>
+              <Typography variant="body2" color={transaction.status=="success" ? colors.greenAccent[500] : colors.redAccent[500]}>
+            {transaction.status}
+          </Typography>
             </Box>
 
             <Box color={colors.grey[100]}>

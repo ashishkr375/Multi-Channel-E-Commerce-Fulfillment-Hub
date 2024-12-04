@@ -18,6 +18,7 @@ import Calendar from "./scenes/calendar/calendar";
 import Connect from "./scenes/connect";
 import Transactions from "./scenes/transactions";
 import Products from "./scenes/products";
+import ViewDetails from "./scenes/orders/ordersdetails";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -47,6 +48,8 @@ function App() {
               <Route path="/connect" element={<Connect />} />
               <Route path="/transactions" element={<Transactions/>} />
               <Route path="/products" element={<Products />} />
+              <Route path="/orders/:orderId" element={<ViewDetails />} />
+              
               
             </Routes>
           </main>

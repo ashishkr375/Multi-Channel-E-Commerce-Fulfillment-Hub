@@ -63,6 +63,25 @@ router.get("/orders", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch orders from Shopify" });
   }
 });
+// Route to get details of a particular order
+router.get("/order/:orderId", async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+
+    // Fetch order details using the order ID
+    const order = await shopify.order.get(orderId);
+    
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    
+    res.json(order);
+  } catch (error) {
+    console.error("Error fetching order details:", error);
+    res.status(500).json({ error: "Failed to fetch order details" });
+  }
+});
 
 // Route to get transactions for all orders
 router.get("/transactions", async (req, res) => {

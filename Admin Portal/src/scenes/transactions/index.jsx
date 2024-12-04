@@ -9,6 +9,7 @@ const Transactions = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Fetch the transactions from the API
   useEffect(() => {
@@ -21,8 +22,11 @@ const Transactions = () => {
           id: transaction.txId, // Use txId as the unique identifier
         }));
         setTransactions(transactionsWithId);
+        setLoading(false);
+
       } catch (error) {
         console.error("Error fetching transactions:", error);
+        setLoading(false);
       }
     };
 
@@ -59,7 +63,15 @@ const Transactions = () => {
     },
     { field: "amount", headerName: "Amount", flex: 0.5, type: "number", headerAlign: "left", align: "left" },
     { field: "currency", headerName: "Currency", flex: 0.5 },
-    { field: "status", headerName: "Status", flex: 1 },
+    { field: "status", headerName: "Status", flex: 1 ,
+      renderCell: ({ row }) => {
+        return (
+          <Typography variant="body2" color={row.status=="success" ? colors.greenAccent[500] : colors.redAccent[500]}>
+            {row.status}
+          </Typography>
+        );
+      },
+    },
     { field: "gateway", headerName: "Payment Gateway", flex: 1 },
     
     {
@@ -76,6 +88,16 @@ const Transactions = () => {
     },
   ];
 
+ if (loading) {
+  return (
+    <Box m="20px">
+      <Header title="Transactions" subtitle="Fetching Transactions details" />
+      <Typography variant="h6" color={colors.grey[300]}>
+        Loading Trasactions details...
+      </Typography>
+    </Box>
+  );
+}
   return (
     <Box m="20px">
       <Header title="TRANSACTIONS" subtitle="Manage your Transactions" />

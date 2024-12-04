@@ -10,13 +10,16 @@ const Products = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+
 
   // Fetch the products from the API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/admin/products"
+            "https://multi-channel-e-commerce-fulfillment-hub.onrender.com/api/admin/products"
         );
         
         const productsWithId = response.data.map((product, index) => ({
@@ -24,8 +27,10 @@ const Products = () => {
           id: index + 1,
         }));
         setProducts(productsWithId);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
+        setLoading(false);
       }
     };
 
@@ -63,6 +68,18 @@ const Products = () => {
       ),
     },
   ];
+
+ // If data is loading, show loading text
+ if (loading) {
+  return (
+    <Box m="20px">
+      <Header title="PRODUCTS" subtitle="Fetching Products" />
+      <Typography variant="h6" color={colors.grey[300]}>
+        Loading Products details...
+      </Typography>
+    </Box>
+  );
+}
 
   return (
     <Box m="20px">
