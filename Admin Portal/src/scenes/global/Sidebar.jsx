@@ -127,13 +127,13 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-            <Typography
+{!isCollapsed && <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
               Order Management
-            </Typography>
+            </Typography>}
             <Item
               title="Manage Orders"
               to="/orders"
@@ -156,13 +156,13 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-            <Typography
+{!isCollapsed && <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
             >
               Stores Management
-            </Typography>
+            </Typography>}
             <Item
               title="Manage Stores"
               to="/connect"
