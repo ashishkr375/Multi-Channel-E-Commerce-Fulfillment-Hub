@@ -18,6 +18,8 @@ import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -126,8 +128,23 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+  title="Recent Transactions"
+  to="/transactions"
+  icon={<AccountBalanceWalletIcon />} 
+  selected={selected}
+  setSelected={setSelected}
+/>
 
-{!isCollapsed && <Typography
+<Item
+  title="Products"
+  to="/products"  
+  icon={<ShoppingCartIcon />}
+  setSelected={setSelected}
+/>
+            
+
+            {!isCollapsed && <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}
@@ -156,7 +173,7 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
 
-{!isCollapsed && <Typography
+          {!isCollapsed && <Typography
               variant="h6"
               color={colors.grey[300]}
               sx={{ m: "15px 0 5px 20px" }}

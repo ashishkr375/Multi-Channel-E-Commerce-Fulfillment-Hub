@@ -17,6 +17,7 @@ import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/calendar/calendar";
 import Connect from "./scenes/connect";
 import Transactions from "./scenes/transactions";
+import Products from "./scenes/products";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -45,6 +46,8 @@ function App() {
               <Route path="*" element={<div>404</div>} />
               <Route path="/connect" element={<Connect />} />
               <Route path="/transactions" element={<Transactions/>} />
+              <Route path="/products" element={<Products />} />
+              
             </Routes>
           </main>
         </div>
